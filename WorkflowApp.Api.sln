@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37012.4 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkflowApp.Api", "WorkflowApp.Api\WorkflowApp.Api.csproj", "{60813022-3AC6-4FE3-9F29-2FE2054ED8DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{60813022-3AC6-4FE3-9F29-2FE2054ED8DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60813022-3AC6-4FE3-9F29-2FE2054ED8DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60813022-3AC6-4FE3-9F29-2FE2054ED8DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60813022-3AC6-4FE3-9F29-2FE2054ED8DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9C5DC22E-2408-4E96-9258-577B671C99B5}
+	EndGlobalSection
+EndGlobal
