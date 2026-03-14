@@ -40,6 +40,34 @@ namespace WorkflowApp.Api.Tests.Serveices
             user.PasswordHash.Should().NotBe("Password123");
         }
 
+
+        [Fact]
+        public async Task RegisterAsync_既に同じログインIDのユーザーが登録されていたら登録が失敗すること()
+        {
+            // Arrange
+            var dbContext = CreateDbContext();
+            var jwtService = Substitute.For<IJwtTokenService>();
+
+            var authService = new AuthService(dbContext, jwtService);
+
+            var request = new RegisterRequest
+            {
+                LoginId = "testuser",
+                DisplayName = "Test User",
+                Password = "Password123"
+            };
+
+            // 先に1件登録
+            await authService.RegisterAsync(request, TestContext.Current.CancellationToken);
+
+            // Act
+            async Task action() => await authService.RegisterAsync(request);
+
+            // Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(action);
+        }
+
+
         private static AppDbContext CreateDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
