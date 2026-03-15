@@ -1,10 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
-<<<<<<< HEAD
 using WorkflowApp.Api.Domain.Entities;
-=======
->>>>>>> 2e5140c17adbf9afcb085007e0d473288c419986
 using WorkflowApp.Api.Infrastructure.Data;
 using WorkflowApp.Api.Models.Auth;
 using WorkflowApp.Api.Services;
@@ -71,7 +68,6 @@ namespace WorkflowApp.Api.Tests.Serveices
             await Assert.ThrowsAsync<InvalidOperationException>(action);
         }
 
-<<<<<<< HEAD
         [Fact]
         public async Task LoginAsync_有効なパスワードの場合はログインに成功すること()
         {
@@ -127,9 +123,6 @@ namespace WorkflowApp.Api.Tests.Serveices
         /// インメモリデータベースを使用してAppDbContextのインスタンスを作成する
         /// </summary>
         /// <returns></returns>
-=======
-
->>>>>>> 2e5140c17adbf9afcb085007e0d473288c419986
         private static AppDbContext CreateDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
