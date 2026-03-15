@@ -184,6 +184,50 @@ namespace WorkflowApp.Api.Tests.Serveices
             jwtService.DidNotReceive().CreateToken(Arg.Any<User>());
         }
 
+        [Fact]
+        public async Task LoginAsync_非アクティブなユーザーの場合はログインに失敗すること()
+        {
+            // Arrange
+            var dbContext = CreateDbContext();
+
+            var jwtService = Substitute.For<IJwtTokenService>();
+
+            var authService = new AuthService(dbContext, jwtService);
+
+            // 先にユーザーを登録しておく
+            var registerRequest = new RegisterRequest
+            {
+                LoginId = "testuser",
+                DisplayName = "Test User",
+                Password = "Password123"                
+            };
+
+            await authService.RegisterAsync(registerRequest, TestContext.Current.CancellationToken);
+
+            // 登録したユーザーを非アクティブにする
+            var user = await dbContext.User.SingleAsync(x => x.LoginId == "testuser",
+                                                        TestContext.Current.CancellationToken);
+            user.IsActive = false;
+            user.UpdatedAt = DateTime.UtcNow;
+            await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+            // ログインリクエストを作成
+            var loginRequest = new LoginRequest
+            {
+                LoginId = "testuser",
+                Password = "Password123"
+            };
+
+            // Act
+            var result = await authService.LoginAsync(loginRequest, TestContext.Current.CancellationToken);
+
+            // Assert
+            Assert.Null(result);
+
+            // IJwtTokenServiceのCreateTokenメソッドが呼び出されていないことを確認
+            jwtService.DidNotReceive().CreateToken(Arg.Any<User>());
+        }
+
         /// <summary>
         /// インメモリデータベースを使用してAppDbContextのインスタンスを作成する
         /// </summary>
