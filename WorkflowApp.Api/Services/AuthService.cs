@@ -51,6 +51,7 @@ namespace WorkflowApp.Api.Services
             _dbContext.User.Add(user);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
+<<<<<<< HEAD
 
         public async Task<AuthResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
         {
@@ -86,5 +87,7 @@ namespace WorkflowApp.Api.Services
 
             return _jwtTokenService.CreateToken(user);
         }
+=======
+>>>>>>> 2e5140c17adbf9afcb085007e0d473288c419986
     }
 }
