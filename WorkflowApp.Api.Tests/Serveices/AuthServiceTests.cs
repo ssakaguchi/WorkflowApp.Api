@@ -2,10 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using WorkflowApp.Api.Domain.Entities;
-using WorkflowApp.Api.Infrastructure.Data;
 using WorkflowApp.Api.Models.Auth;
 using WorkflowApp.Api.Services;
 using WorkflowApp.Api.Services.Interfaces;
+using WorkflowApp.Api.Tests.Helpers;
 
 namespace WorkflowApp.Api.Tests.Serveices
 {
@@ -15,7 +15,7 @@ namespace WorkflowApp.Api.Tests.Serveices
         public async Task RegisterAsync_ユーザーを作成することを確認する()
         {
             // Arrange
-            AppDbContext dbContext = CreateDbContext();
+            var dbContext = TestDbContextFactory.CreateDbContext();
 
             // IJwtTokenServiceはRegisterAsyncのテストでは必要ないためモックを作成
             var jwtTokenService = Substitute.For<IJwtTokenService>();
@@ -46,7 +46,7 @@ namespace WorkflowApp.Api.Tests.Serveices
         public async Task RegisterAsync_既に同じログインIDのユーザーが登録されていたら登録が失敗すること()
         {
             // Arrange
-            var dbContext = CreateDbContext();
+            var dbContext = TestDbContextFactory.CreateDbContext();
             var jwtService = Substitute.For<IJwtTokenService>();
 
             var authService = new AuthService(dbContext, jwtService);
@@ -72,7 +72,7 @@ namespace WorkflowApp.Api.Tests.Serveices
         public async Task LoginAsync_有効なパスワードの場合はログインに成功すること()
         {
             // Arrange
-            var dbContext = CreateDbContext();
+            var dbContext = TestDbContextFactory.CreateDbContext();
 
             var jwtService = Substitute.For<IJwtTokenService>();
 
@@ -123,7 +123,7 @@ namespace WorkflowApp.Api.Tests.Serveices
         public async Task LoginAsync_無効なパスワードの場合はログインに失敗すること()
         {
             // Arrange
-            var dbContext = CreateDbContext();
+            var dbContext = TestDbContextFactory.CreateDbContext();
 
             var jwtService = Substitute.For<IJwtTokenService>();
 
@@ -161,7 +161,7 @@ namespace WorkflowApp.Api.Tests.Serveices
         public async Task LoginAsync_ユーザーが存在しない場合はログインに失敗すること()
         {
             // Arrange
-            var dbContext = CreateDbContext();
+            var dbContext = TestDbContextFactory.CreateDbContext();
 
             var jwtService = Substitute.For<IJwtTokenService>();
 
@@ -188,7 +188,7 @@ namespace WorkflowApp.Api.Tests.Serveices
         public async Task LoginAsync_非アクティブなユーザーの場合はログインに失敗すること()
         {
             // Arrange
-            var dbContext = CreateDbContext();
+            var dbContext = TestDbContextFactory.CreateDbContext();
 
             var jwtService = Substitute.For<IJwtTokenService>();
 
@@ -199,7 +199,7 @@ namespace WorkflowApp.Api.Tests.Serveices
             {
                 LoginId = "testuser",
                 DisplayName = "Test User",
-                Password = "Password123"                
+                Password = "Password123"
             };
 
             await authService.RegisterAsync(registerRequest, TestContext.Current.CancellationToken);
@@ -226,19 +226,6 @@ namespace WorkflowApp.Api.Tests.Serveices
 
             // IJwtTokenServiceのCreateTokenメソッドが呼び出されていないことを確認
             jwtService.DidNotReceive().CreateToken(Arg.Any<User>());
-        }
-
-        /// <summary>
-        /// インメモリデータベースを使用してAppDbContextのインスタンスを作成する
-        /// </summary>
-        /// <returns></returns>
-        private static AppDbContext CreateDbContext()
-        {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
-
-            return new AppDbContext(options);
         }
     }
 }
