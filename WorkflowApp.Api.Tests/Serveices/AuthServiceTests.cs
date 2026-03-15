@@ -119,6 +119,44 @@ namespace WorkflowApp.Api.Tests.Serveices
         }
 
 
+        [Fact]
+        public async Task LoginAsync_無効なパスワードの場合はログインに失敗すること()
+        {
+            // Arrange
+            var dbContext = CreateDbContext();
+
+            var jwtService = Substitute.For<IJwtTokenService>();
+
+            var authService = new AuthService(dbContext, jwtService);
+
+            // 先にユーザーを登録しておく
+            var registerRequest = new RegisterRequest
+            {
+                LoginId = "testuser",
+                DisplayName = "Test User",
+                Password = "Password123"
+            };
+
+            await authService.RegisterAsync(registerRequest, TestContext.Current.CancellationToken);
+
+
+            // ログインリクエストを作成
+            var loginRequest = new LoginRequest
+            {
+                LoginId = "testuser",
+                Password = "WrondPassword"  // 無効なパスワード
+            };
+
+            // Act
+            var result = await authService.LoginAsync(loginRequest, TestContext.Current.CancellationToken);
+
+            // Assert
+            Assert.Null(result);
+
+            // IJwtTokenServiceのCreateTokenメソッドが呼び出されていないことを確認
+            jwtService.DidNotReceive().CreateToken(Arg.Any<User>());
+        }
+
         /// <summary>
         /// インメモリデータベースを使用してAppDbContextのインスタンスを作成する
         /// </summary>
