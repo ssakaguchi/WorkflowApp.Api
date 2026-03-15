@@ -157,6 +157,33 @@ namespace WorkflowApp.Api.Tests.Serveices
             jwtService.DidNotReceive().CreateToken(Arg.Any<User>());
         }
 
+        [Fact]
+        public async Task LoginAsync_ユーザーが存在しない場合はログインに失敗すること()
+        {
+            // Arrange
+            var dbContext = CreateDbContext();
+
+            var jwtService = Substitute.For<IJwtTokenService>();
+
+            var authService = new AuthService(dbContext, jwtService);
+
+            // ログインリクエストを作成
+            var loginRequest = new LoginRequest
+            {
+                LoginId = "WrongUser",
+                Password = "Password123"
+            };
+
+            // Act
+            var result = await authService.LoginAsync(loginRequest, TestContext.Current.CancellationToken);
+
+            // Assert
+            Assert.Null(result);
+
+            // IJwtTokenServiceのCreateTokenメソッドが呼び出されていないことを確認
+            jwtService.DidNotReceive().CreateToken(Arg.Any<User>());
+        }
+
         /// <summary>
         /// インメモリデータベースを使用してAppDbContextのインスタンスを作成する
         /// </summary>
