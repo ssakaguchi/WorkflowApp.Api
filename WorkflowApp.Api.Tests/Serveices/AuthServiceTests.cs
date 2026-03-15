@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
+using WorkflowApp.Api.Domain.Entities;
 using WorkflowApp.Api.Infrastructure.Data;
 using WorkflowApp.Api.Models.Auth;
 using WorkflowApp.Api.Services;
@@ -67,7 +68,61 @@ namespace WorkflowApp.Api.Tests.Serveices
             await Assert.ThrowsAsync<InvalidOperationException>(action);
         }
 
+        [Fact]
+        public async Task LoginAsync_有効なパスワードの場合はログインに成功すること()
+        {
+            // Arrange
+            var dbContext = CreateDbContext();
 
+            var jwtService = Substitute.For<IJwtTokenService>();
+
+            // ログイン成功時の期待されるレスポンスを設定
+            var expectedResponse = new AuthResponse
+            {
+                Token = "test-token",
+                LoginId = "testuser",
+                DisplayName = "Test User",
+                Role = "Applicant",
+                ExpiresAt = DateTime.UtcNow.AddHours(1)
+            };
+
+            // IJwtTokenServiceのCreateTokenメソッドが呼び出されたときに、期待されるレスポンスを返すように設定
+            jwtService.CreateToken(Arg.Any<User>())
+                .Returns(expectedResponse);
+
+            var authService = new AuthService(dbContext, jwtService);
+
+            // 先にユーザーを登録しておく
+            var registerRequest = new RegisterRequest
+            {
+                LoginId = "testuser",
+                DisplayName = "Test User",
+                Password = "Password123"
+            };
+
+            await authService.RegisterAsync(registerRequest, TestContext.Current.CancellationToken);
+
+            // ログインリクエストを作成
+            var loginRequest = new LoginRequest
+            {
+                LoginId = "testuser",
+                Password = "Password123"
+            };
+
+            // Act
+            var result = await authService.LoginAsync(loginRequest, TestContext.Current.CancellationToken);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("test-token", result.Token);
+            Assert.Equal("testuser", result.LoginId);
+        }
+
+
+        /// <summary>
+        /// インメモリデータベースを使用してAppDbContextのインスタンスを作成する
+        /// </summary>
+        /// <returns></returns>
         private static AppDbContext CreateDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()

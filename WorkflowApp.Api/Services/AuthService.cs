@@ -51,5 +51,40 @@ namespace WorkflowApp.Api.Services
             _dbContext.User.Add(user);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task<AuthResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
+        {
+            // ユーザーの取得
+            var user = await _dbContext.User
+                .FirstOrDefaultAsync(
+                    x => x.LoginId == request.LoginId && x.IsActive,
+                    cancellationToken);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            // パスワードの検証
+            var verifyResult = _passwordHasher.VerifyHashedPassword(
+                user,
+                user.PasswordHash,
+                request.Password);
+
+            if (verifyResult == PasswordVerificationResult.Failed)
+            {
+                return null;
+            }
+
+            // パスワードのハッシュアルゴリズムが古い場合は再ハッシュして保存
+            if (verifyResult == PasswordVerificationResult.SuccessRehashNeeded)
+            {
+                user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
+                user.UpdatedAt = DateTime.UtcNow;
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+
+            return _jwtTokenService.CreateToken(user);
+        }
     }
 }
