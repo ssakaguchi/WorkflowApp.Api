@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using WorkflowApp.Api.Domain.Entities;
+using WorkflowApp.Api.Infrastructure.Security;
 using WorkflowApp.Api.Models.Auth;
 using WorkflowApp.Api.Services;
 using WorkflowApp.Api.Services.Interfaces;
@@ -74,21 +75,8 @@ namespace WorkflowApp.Api.Tests.Serveices
             // Arrange
             var dbContext = TestDbContextFactory.CreateDbContext();
 
-            var jwtService = Substitute.For<IJwtTokenService>();
-
-            // ログイン成功時の期待されるレスポンスを設定
-            var expectedResponse = new AuthResponse
-            {
-                Token = "test-token",
-                LoginId = "testuser",
-                DisplayName = "Test User",
-                Role = "Applicant",
-                ExpiresAt = DateTime.UtcNow.AddHours(1)
-            };
-
-            // IJwtTokenServiceのCreateTokenメソッドが呼び出されたときに、期待されるレスポンスを返すように設定
-            jwtService.CreateToken(Arg.Any<User>())
-                .Returns(expectedResponse);
+            var configuration =TestConfigurationFactory.CreateConfiguration();
+            var jwtService = new JwtTokenService(configuration);
 
             var authService = new AuthService(dbContext, jwtService);
 
@@ -114,7 +102,7 @@ namespace WorkflowApp.Api.Tests.Serveices
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("test-token", result.Token);
+            Assert.False(string.IsNullOrWhiteSpace(result.Token));
             Assert.Equal("testuser", result.LoginId);
         }
 
