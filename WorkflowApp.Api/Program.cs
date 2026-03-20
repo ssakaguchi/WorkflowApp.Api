@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,33 @@ builder.Services
             ValidateIssuerSigningKey = true,    // 署名キーの検証を有効にする
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),    // 署名キーを設定
             ValidateLifetime = true,            // トークンの有効期限の検証を有効にする
+            ClockSkew = TimeSpan.Zero
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+                Debug.WriteLine("Authorization header: " + (authHeader ?? "(null)"));
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                Debug.WriteLine("Authentication failed: " + context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                Debug.WriteLine("OnChallenge error: " + context.Error);
+                System.Diagnostics.Debug.WriteLine("OnChallenge description: " + context.ErrorDescription);
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Debug.WriteLine("Token validated");
+                return Task.CompletedTask;
+            }
         };
     });
 
