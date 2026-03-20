@@ -8,7 +8,7 @@ namespace WorkflowApp.Api.Controllers
     [Route("api/[controller]")]
     public class SampleController : ControllerBase
     {
-        [Authorize]
+        //[Authorize]
         [HttpGet("me")]
         public IActionResult Me()
         {
@@ -21,3 +21,4 @@ namespace WorkflowApp.Api.Controllers
         }
     }
 }
+ 
