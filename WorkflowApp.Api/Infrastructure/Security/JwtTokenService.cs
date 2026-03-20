@@ -35,7 +35,7 @@ namespace WorkflowApp.Api.Infrastructure.Security
             var audience = configuration["Jwt:Audience"]
                 ?? throw new InvalidOperationException("Jwt:Audienceが設定されていません");
 
-            var secreatKey = configuration["Jwt:SecretKey"]
+            var secretKey = configuration["Jwt:SecretKey"]
                 ?? throw new InvalidOperationException("Jwt:SecretKeyが設定されていません");
 
             var expireMinutes = int.TryParse(configuration["Jwt:ExpireMinutes"], out var minutes) ? minutes : 60;
@@ -52,7 +52,7 @@ namespace WorkflowApp.Api.Infrastructure.Security
             };
 
             // シークレットキーを使用して署名用のセキュリティキーを作成
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secreatKey));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
             // 署名のためのクレデンシャルを作成
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

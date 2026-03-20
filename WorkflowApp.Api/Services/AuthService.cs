@@ -7,6 +7,12 @@ using WorkflowApp.Api.Services.Interfaces;
 
 namespace WorkflowApp.Api.Services
 {
+    /// <summary>
+    /// ユーザー認証および登録機能を提供する
+    /// </summary>
+    /// <remarks>
+    /// このサービスはユーザーの登録と認証を担当し、JWTトークンの発行も行います。
+    /// </remarks>
     public class AuthService : IAuthService
     {
         private readonly AppDbContext _dbContext;
@@ -28,7 +34,7 @@ namespace WorkflowApp.Api.Services
         /// <exception cref="InvalidOperationException">同じLoginIdのユーザーが既に存在する場合にスローされます。</exception>
         public async Task RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
         {
-            var exists = await _dbContext.User
+            var exists = await _dbContext.Users
             .AnyAsync(x => x.LoginId == request.LoginId, cancellationToken);
 
             if (exists)
@@ -48,14 +54,24 @@ namespace WorkflowApp.Api.Services
 
             user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
 
-            _dbContext.User.Add(user);
+            _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
+        /// <summary>
+        /// ログイン情報をもとにユーザーを認証し、成功時に認証情報を返す
+        /// </summary>
+        /// <remarks>
+        /// 認証成功時に古いパスワードハッシュは自動更新されます。
+        /// ユーザーが存在しない・無効・パスワード不一致の場合はnullを返します。
+        /// </remarks>
+        /// <param name="request">ログインIDとパスワードを含むリクエスト（null不可）</param>
+        /// <param name="cancellationToken">非同期処理のキャンセル用トークン</param>
+        /// <returns>成功時は認証情報、失敗時は null</returns>
         public async Task<AuthResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
         {
             // ユーザーの取得
-            var user = await _dbContext.User
+            var user = await _dbContext.Users
                 .FirstOrDefaultAsync(
                     x => x.LoginId == request.LoginId && x.IsActive,
                     cancellationToken);

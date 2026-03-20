@@ -34,7 +34,7 @@ namespace WorkflowApp.Api.Tests.Serveices
             await authService.RegisterAsync(request, TestContext.Current.CancellationToken);
 
             // Assert
-            var user = await dbContext.User.SingleAsync(x => x.LoginId == "testuser",
+            var user = await dbContext.Users.SingleAsync(x => x.LoginId == "testuser",
                 cancellationToken: TestContext.Current.CancellationToken);
 
             user.DisplayName.Should().Be("Test User");
@@ -193,7 +193,7 @@ namespace WorkflowApp.Api.Tests.Serveices
             await authService.RegisterAsync(registerRequest, TestContext.Current.CancellationToken);
 
             // 登録したユーザーを非アクティブにする
-            var user = await dbContext.User.SingleAsync(x => x.LoginId == "testuser",
+            var user = await dbContext.Users.SingleAsync(x => x.LoginId == "testuser",
                                                         TestContext.Current.CancellationToken);
             user.IsActive = false;
             user.UpdatedAt = DateTime.UtcNow;

@@ -8,7 +8,7 @@ namespace WorkflowApp.Api.Controllers
     [Route("api/[controller]")]
     public class SampleController : ControllerBase
     {
-        //[Authorize]
+        [Authorize]
         [HttpGet("me")]
         public IActionResult Me()
         {
@@ -16,7 +16,7 @@ namespace WorkflowApp.Api.Controllers
             {
                 LoginId = User.Identity?.Name,
                 Role = User.FindFirstValue(ClaimTypes.Role),
-                DisplayName = User.FindFirst("displayName")?.Value
+                DisplayName = User.FindFirst("displayName")?.Value,
             });
         }
     }
