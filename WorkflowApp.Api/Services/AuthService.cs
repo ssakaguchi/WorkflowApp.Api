@@ -28,7 +28,7 @@ namespace WorkflowApp.Api.Services
         /// <exception cref="InvalidOperationException">同じLoginIdのユーザーが既に存在する場合にスローされます。</exception>
         public async Task RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
         {
-            var exists = await _dbContext.User
+            var exists = await _dbContext.Users
             .AnyAsync(x => x.LoginId == request.LoginId, cancellationToken);
 
             if (exists)
@@ -48,14 +48,14 @@ namespace WorkflowApp.Api.Services
 
             user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
 
-            _dbContext.User.Add(user);
+            _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<AuthResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
         {
             // ユーザーの取得
-            var user = await _dbContext.User
+            var user = await _dbContext.Users
                 .FirstOrDefaultAsync(
                     x => x.LoginId == request.LoginId && x.IsActive,
                     cancellationToken);

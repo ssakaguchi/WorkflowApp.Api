@@ -29,7 +29,7 @@ var issuer = builder.Configuration["Jwt:Issuer"]
 var audience = builder.Configuration["Jwt:Audience"]
     ?? throw new InvalidOperationException("Jwt:Audienceが設定されていません");
 
-var secreatKey = builder.Configuration["Jwt:SecretKey"]
+var secretKey = builder.Configuration["Jwt:SecretKey"]
     ?? throw new InvalidOperationException("Jwt:SecretKeyが設定されていません");
 
 // JWT認証の設定
@@ -45,7 +45,7 @@ builder.Services
             ValidateAudience = true,            // 対象の検証を有効にする
             ValidAudience = audience,           // 有効な対象を設定
             ValidateIssuerSigningKey = true,    // 署名キーの検証を有効にする
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secreatKey)),    // 署名キーを設定
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),    // 署名キーを設定
             ValidateLifetime = true,            // トークンの有効期限の検証を有効にする
         };
     });

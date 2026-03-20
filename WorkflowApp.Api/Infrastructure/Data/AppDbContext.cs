@@ -10,7 +10,7 @@ namespace WorkflowApp.Api.Infrastructure.Data
         {
         }
 
-        public DbSet<User> User=> Set<User>();
+        public DbSet<User> Users=> Set<User>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
