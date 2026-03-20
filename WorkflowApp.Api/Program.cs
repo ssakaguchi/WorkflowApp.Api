@@ -1,10 +1,11 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using WorkflowApp.Api.Infrastructure.Data;
 using WorkflowApp.Api.Infrastructure.Security;
 using WorkflowApp.Api.Services;
 using WorkflowApp.Api.Services.Interfaces;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
+
+// データベースコンテキストの登録
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -29,7 +34,7 @@ var secreatKey = builder.Configuration["Jwt:SecretKey"]
 
 // JWT認証の設定
 builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme) 
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         // トークンの検証パラメータを設定
