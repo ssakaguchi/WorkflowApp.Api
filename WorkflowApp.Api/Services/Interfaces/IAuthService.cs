@@ -1,4 +1,4 @@
-﻿using WorkflowApp.Api.Models.Auth;
+﻿using WorkflowApp.Api.DTO.Auth;
 
 namespace WorkflowApp.Api.Services.Interfaces
 {

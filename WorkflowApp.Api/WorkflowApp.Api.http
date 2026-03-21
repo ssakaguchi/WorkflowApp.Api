@@ -20,10 +20,6 @@ Content-Type: application/json
   "password": "Password123"
 }
 
-### token（手動で貼る）
-GET {{WorkflowApp.Api_HostAddress}}/api/sample/me
-Authorization: Bearer {{token}}
-
-###
-GET {{WorkflowApp.Api_HostAddress}}/api/sample/me
-Authorization: Bearer test-token
+### ### 動作しなかったためコメントアウト（Postmanで同じリクエストを送信して期待通りの応答があることを確認）
+# GET {{WorkflowApp.Api_HostAddress}}/api/sample/me
+# Authorization: Bearer {{token}}
