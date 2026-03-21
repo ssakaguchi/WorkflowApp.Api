@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WorkflowApp.Api.Models.Auth;
+using WorkflowApp.Api.DTO.Auth;
 using WorkflowApp.Api.Services.Interfaces;
 
 namespace WorkflowApp.Api.Controllers;

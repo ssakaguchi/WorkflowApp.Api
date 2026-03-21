@@ -1,5 +1,5 @@
 ﻿using WorkflowApp.Api.Domain.Entities;
-using WorkflowApp.Api.Models.Auth;
+using WorkflowApp.Api.DTO.Auth;
 
 namespace WorkflowApp.Api.Services.Interfaces
 {

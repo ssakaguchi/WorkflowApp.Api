@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WorkflowApp.Api.Models.Auth
+namespace WorkflowApp.Api.DTO.Auth
 {
     public class LoginRequest
     {

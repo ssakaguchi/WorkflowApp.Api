@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using WorkflowApp.Api.Domain.Entities;
-using WorkflowApp.Api.Models.Auth;
+using WorkflowApp.Api.DTO.Auth;
 using WorkflowApp.Api.Services.Interfaces;
 
 namespace WorkflowApp.Api.Infrastructure.Security

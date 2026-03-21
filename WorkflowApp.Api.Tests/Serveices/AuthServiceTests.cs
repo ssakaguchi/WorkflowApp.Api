@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using WorkflowApp.Api.Domain.Entities;
 using WorkflowApp.Api.Infrastructure.Security;
-using WorkflowApp.Api.Models.Auth;
+using WorkflowApp.Api.DTO.Auth;
 using WorkflowApp.Api.Services;
 using WorkflowApp.Api.Services.Interfaces;
 using WorkflowApp.Api.Tests.Helpers;

@@ -1,4 +1,4 @@
-﻿namespace WorkflowApp.Api.Models.Auth
+﻿namespace WorkflowApp.Api.DTO.Auth
 {
     public class AuthResponse
     {
