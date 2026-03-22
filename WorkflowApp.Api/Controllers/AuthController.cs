@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WorkflowApp.Api.DTO.Auth;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using WorkflowApp.Api.DTOs.Auth;
 using WorkflowApp.Api.Services.Interfaces;
 
 namespace WorkflowApp.Api.Controllers;
@@ -12,10 +13,12 @@ namespace WorkflowApp.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly ICurrentUserService _currentUserService;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, ICurrentUserService currentUserService)
     {
         _authService = authService;
+        _currentUserService = currentUserService;
     }
 
     /// <summary>
@@ -73,5 +76,27 @@ public class AuthController : ControllerBase
         }
 
         return Ok(response);
+    }
+
+
+    /// <summary>
+    /// 認証済ユーザーの情報を取得します
+    /// </summary>
+    /// <returns>
+    /// 成功: 200 OK、未認証: 401 Unauthorized
+    /// </returns>
+    [Authorize]
+    [HttpGet("me")]
+    public IActionResult Me()
+    {
+        var me = _currentUserService.GetCurrentUser(User);
+
+        if (me is null)
+        {
+            return Unauthorized();
+        }
+
+        return Ok(me);
+
     }
 }

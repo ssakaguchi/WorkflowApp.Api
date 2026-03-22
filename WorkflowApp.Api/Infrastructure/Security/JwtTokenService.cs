@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using WorkflowApp.Api.Domain.Entities;
-using WorkflowApp.Api.DTO.Auth;
+using WorkflowApp.Api.DTOs.Auth;
 using WorkflowApp.Api.Services.Interfaces;
 
 namespace WorkflowApp.Api.Infrastructure.Security
@@ -45,6 +45,7 @@ namespace WorkflowApp.Api.Infrastructure.Security
             // ユーザのクレームを作成
             var claims = new List<Claim>
             {
+                new (ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new (JwtRegisteredClaimNames.Sub, user.LoginId),
                 new (ClaimTypes.Name, user.LoginId),
                 new (ClaimTypes.Role, user.Role),

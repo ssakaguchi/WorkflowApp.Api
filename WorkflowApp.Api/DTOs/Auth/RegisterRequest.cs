@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WorkflowApp.Api.DTO.Auth
+namespace WorkflowApp.Api.DTOs.Auth
 {
     public class RegisterRequest
     {

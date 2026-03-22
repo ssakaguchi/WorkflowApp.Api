@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WorkflowApp.Api.Domain.Entities;
 using WorkflowApp.Api.Infrastructure.Data;
-using WorkflowApp.Api.DTO.Auth;
+using WorkflowApp.Api.DTOs.Auth;
 using WorkflowApp.Api.Services.Interfaces;
 
 namespace WorkflowApp.Api.Services
