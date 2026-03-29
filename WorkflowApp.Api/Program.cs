@@ -13,6 +13,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        // フロントエンドアプリケーションがホストされているオリジンを指定
+        if (builder.Environment.IsDevelopment())
+        {
+            policy
+                .WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }
+        else
+        {
+            policy
+                .WithOrigins("https://your-frontend.example.com")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }
+    });
+});
 
 // データベースコンテキストの登録
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -51,8 +72,6 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthentication();
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -61,15 +80,21 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.EnsureCreated();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    // 本番環境ではHSTSを有効にしてHTTPSリダイレクトを行う
+    app.UseHsts();
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
+// CORSミドルウェアを追加して、フロントエンドからのリクエストを許可する
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
