@@ -42,7 +42,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 // JWTの発行者、対象、シークレットキー、有効期限を設定
 var issuer = builder.Configuration["Jwt:Issuer"]
