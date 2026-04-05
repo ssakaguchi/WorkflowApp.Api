@@ -1,0 +1,43 @@
+﻿using WorkflowApp.Api.Domain.Entities;
+using WorkflowApp.Api.DTOs.Application;
+using WorkflowApp.Api.Infrastructure.Data;
+using WorkflowApp.Api.Services.Interfaces;
+
+namespace WorkflowApp.Api.Services
+{
+    public class ApplicationService: IApplicationService
+    {
+        private readonly AppDbContext _dbContext;
+
+        public ApplicationService(AppDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        /// <summary>
+        /// 非同期で新しい申請エンティティを作成し、データベースに保存します。
+        /// </summary>
+        /// <returns>作成された申請エンティティの一意の識別子。</returns>
+        public async Task<int> CreateAsync(CreateApplicationRequest request,
+                                           int userId,
+                                           CancellationToken cancellationToken)
+        {
+            var title = request.Title;
+            var content = request.Content;
+
+            var application = new Application
+            {
+                Title = title,
+                Content = content,
+                ApplicantUserId = userId,
+                CreatedAt = DateTime.UtcNow,
+            };
+
+
+            _dbContext.Applications.Add(application);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return application.Id;
+        }
+    }
+}
