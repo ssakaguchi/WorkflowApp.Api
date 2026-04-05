@@ -16,7 +16,7 @@ namespace WorkflowApp.Api.Tests.Controllers
             // Arrange
             var service = Substitute.For<IApplicationService>();
             service.CreateAsync(Arg.Any<CreateApplicationRequest>(), 1, Arg.Any<CancellationToken>())
-                .Returns(10);
+                .Returns(new CreateApplicationResponse { Id = 10 });
 
             var controller = new ApplicationsController(service);
 

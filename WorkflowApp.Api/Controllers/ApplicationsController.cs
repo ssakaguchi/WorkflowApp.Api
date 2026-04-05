@@ -36,14 +36,14 @@ namespace WorkflowApp.Api.Controllers
                 return Unauthorized();
             }
 
-            var applicationId = await _service.CreateAsync(request,
+            var result = await _service.CreateAsync(request,
                                                            userId,
                                                            none);
 
 
             return CreatedAtAction(nameof(Create),
-                                   new { id = applicationId },
-                                   null);
+                                   new { id = result.Id },
+                                   result);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace WorkflowApp.Api.Services.Interfaces
 {
     public interface IApplicationService
     {
-        Task<int> CreateAsync(
+        Task<CreateApplicationResponse> CreateAsync(
             CreateApplicationRequest request,
             int userId,
             CancellationToken cancellationToken);

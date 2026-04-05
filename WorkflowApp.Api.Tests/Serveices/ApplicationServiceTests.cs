@@ -27,12 +27,12 @@ namespace WorkflowApp.Api.Tests.Serveices
             var userId = 1;
 
             // Act
-            var applicationId = await service.CreateAsync(request, userId, CancellationToken.None);
+            var application = await service.CreateAsync(request, userId, CancellationToken.None);
 
             // Assert
             var savedApplication = await dbContext.Applications.SingleAsync(CancellationToken.None);
 
-            Assert.True(applicationId > 0);
+            Assert.True(application.Id > 0);
 
             Assert.Equal(request.Title, savedApplication.Title);
             Assert.Equal(request.Content, savedApplication.Content);

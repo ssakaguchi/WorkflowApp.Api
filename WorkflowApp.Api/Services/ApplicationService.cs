@@ -18,7 +18,7 @@ namespace WorkflowApp.Api.Services
         /// 非同期で新しい申請エンティティを作成し、データベースに保存します。
         /// </summary>
         /// <returns>作成された申請エンティティの一意の識別子。</returns>
-        public async Task<int> CreateAsync(CreateApplicationRequest request,
+        public async Task<CreateApplicationResponse> CreateAsync(CreateApplicationRequest request,
                                            int userId,
                                            CancellationToken cancellationToken)
         {
@@ -47,7 +47,15 @@ namespace WorkflowApp.Api.Services
             _dbContext.Applications.Add(application);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return application.Id;
+            return new CreateApplicationResponse
+            {
+                Id = application.Id,
+                Title = application.Title,
+                Content = application.Content,
+                Status = application.Status,
+                ApplicantUserId = application.ApplicantUserId,
+                CreatedAt = application.CreatedAt
+            };
         }
     }
 }
