@@ -1,5 +1,5 @@
 ﻿using WorkflowApp.Api.Domain.Entities;
-using WorkflowApp.Api.DTOs.Application;
+using WorkflowApp.Api.DTOs.Applications;
 using WorkflowApp.Api.Infrastructure.Data;
 using WorkflowApp.Api.Services.Interfaces;
 
@@ -24,6 +24,16 @@ namespace WorkflowApp.Api.Services
         {
             var title = request.Title;
             var content = request.Content;
+
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                throw new ArgumentException("件名は必須です。", nameof(request.Title));
+            }
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                throw new ArgumentException("申請内容は必須です。", nameof(request.Content));
+            }
 
             var application = new Application
             {

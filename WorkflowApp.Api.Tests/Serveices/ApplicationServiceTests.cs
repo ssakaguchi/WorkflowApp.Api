@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WorkflowApp.Api.DTOs.Application;
+using WorkflowApp.Api.DTOs.Applications;
 using WorkflowApp.Api.Infrastructure.Data;
 using WorkflowApp.Api.Services;
 
@@ -44,6 +44,53 @@ namespace WorkflowApp.Api.Tests.Serveices
 
             // CreatedAtが過去1分以内であることを確認
             Assert.True(savedApplication.CreatedAt > DateTime.UtcNow.AddMinutes(-1));
+        }
+
+        [Fact]
+        public async Task CreateAsync_Titleが空文字の場合は例外を出すこと()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            await using var dbContext = new AppDbContext(options);
+            var service = new ApplicationService(dbContext);
+
+
+            var request = new CreateApplicationRequest
+            {
+                Title = "   ",
+                Content = "内容"
+            };
+            
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                service.CreateAsync(request, 1, CancellationToken.None));
+        }
+
+
+        [Fact]
+        public async Task CreateAsync_Contentが空文字の場合は例外を出すこと()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            await using var dbContext = new AppDbContext(options);
+            var service = new ApplicationService(dbContext);
+
+
+            var request = new CreateApplicationRequest
+            {
+                Title = "出張申請",
+                Content = "   "
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                service.CreateAsync(request, 1, CancellationToken.None));
         }
     }
 }

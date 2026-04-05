@@ -1,4 +1,4 @@
-﻿using WorkflowApp.Api.DTOs.Application;
+﻿using WorkflowApp.Api.DTOs.Applications;
 
 namespace WorkflowApp.Api.Services.Interfaces
 {
